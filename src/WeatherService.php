@@ -1,10 +1,23 @@
 <?php
 class WeatherService {
 
+    private const CITY_URL = "https://geocoding-api.open-meteo.com/v1/search?name=";
+    private const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?";
+    private const AIR_URL = "https://air-quality-api.open-meteo.com/v1/air-quality?";
+
+    private const POLLEN = [
+        'alder_pollen',
+        'birch_pollen',
+        'grass_pollen',
+        'mugwort_pollen',
+        'olive_pollen',
+        'ragweed_pollen',
+    ];
+
     public static function getCityCoordinates(string $city): array
     {
         $city = urlencode($city);
-        $url = "https://geocoding-api.open-meteo.com/v1/search?name=$city";
+        $url = self::CITY_URL . "$city";
         $result = file_get_contents($url);
         $json = json_decode($result, true)['results'];
         $result = [];
@@ -21,12 +34,32 @@ class WeatherService {
 
     public static function getWeatherForCoordinates(array $coords)
     {
-        $url = "https://api.open-meteo.com/v1/forecast?";
+        $url = self::WEATHER_URL;
         $parameters = [
             'latitude'      => (string)$coords['lat'],
             'longitude'     => (string)$coords['long'],
             'hourly'        => "temperature_2m",
-            'forecast_days' => '1'
+            'forecast_days' => '1',
+            'timezone'      => 'Europe%2FBerlin',
+        ];
+        
+        foreach($parameters as $key => $value){
+            $url = $url . "{$key}={$value}&";
+        }
+        $url = substr($url, 0, -1);
+        $result = file_get_contents($url);
+        return $result;
+    }
+
+    public static function getAirQualityForCoordinates(array $coords)
+    {
+        $url = self::AIR_URL;
+        $parameters = [
+            'latitude'      => (string)$coords['lat'],
+            'longitude'     => (string)$coords['long'],
+            'hourly'        => implode(',', self::POLLEN),
+            'forecast_days' => '4',
+            'timezone'      => 'Europe%2FBerlin',
         ];
         
         foreach($parameters as $key => $value){
