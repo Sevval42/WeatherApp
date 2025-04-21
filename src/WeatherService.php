@@ -32,12 +32,12 @@ class WeatherService {
         return $result;
     }
 
-    public static function getWeatherForCoordinates(array $coords)
+    public static function getWeatherForCoordinates(float $lat, float $long)
     {
         $url = self::WEATHER_URL;
         $parameters = [
-            'latitude'      => (string)$coords['lat'],
-            'longitude'     => (string)$coords['long'],
+            'latitude'      => (string)$lat,
+            'longitude'     => (string)$long,
             'hourly'        => "temperature_2m",
             'forecast_days' => '1',
             'timezone'      => 'Europe%2FBerlin',

@@ -4,28 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <h2>Weather brrr</h2>
-    <form action="index.php" method="POST">
-        Stadt: <input type="text" name="cityinput">
+    <form id="searchForm" action="/search/" method="GET" onsubmit="updateAction()">
+        Stadt: <input type="text" id="cityInput">
         <input type="submit">
     </form>
-    <form action="index.php" method="POST">
-        <?php
-            if(isset($cityList)){
-                foreach ($cityList as $currentCity) {
-                    $text = "{$currentCity['name']}, {$currentCity['country_code']} ({$currentCity['lat']}, {$currentCity['long']})";
-                    $currentCity['cityList'] = $cityList;
-                    $cityInfo = json_encode($currentCity);
-                    
-                    echo "<button type='submit' name='city' class='city-button' value='$cityInfo'>$text</button>";
-                }
+    
+
+    <script>
+    function updateAction() {
+        const input = document.getElementById('cityInput').value.trim();
+        const form = document.getElementById('searchForm');
+
+        if (input) {
+            form.action = "/search/" + encodeURIComponent(input);
+        } else {
+            alert("Please enter a city name.");
+            event.preventDefault();
+        }
+    }
+    </script>
+
+    <?php
+        if(isset($cityList)){
+            foreach ($cityList as $currentCity) {
+                $text = "{$currentCity['name']}, {$currentCity['country_code']} ({$currentCity['lat']}, {$currentCity['long']})";
+                $currentCity['cityList'] = $cityList;
+                $cityInfo = json_encode($currentCity);
+                echo "<form action='/weather/{$cityName}/{$currentCity['lat']}/{$currentCity['long']}' method='POST'>";
+                echo "<button type='submit' class='city-button'>$text</button>";
+                echo '</form>';
             }
-        ?>
-    </form>
-    <?php if(isset($city)) {?>
+        }
+    ?>
+
+    <?php if(isset($lat)) {?>
     
     <form action="index.php" method="POST">
         <div class="selection">
