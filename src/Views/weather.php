@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h2>Weather brrr</h2>
+    <h2>Wetter brrr</h2>
     <form id="searchForm" action="/search/" method="GET" onsubmit="updateAction()">
         Stadt: <input type="text" id="cityInput">
         <input type="submit">
@@ -34,8 +34,8 @@
                 $text = "{$currentCity['name']}, {$currentCity['country_code']} ({$currentCity['lat']}, {$currentCity['long']})";
                 $currentCity['cityList'] = $cityList;
                 $cityInfo = json_encode($currentCity);
-                echo "<form action='/weather/{$cityName}/{$currentCity['lat']}/{$currentCity['long']}' method='POST'>";
-                echo "<button type='submit' class='city-button'>$text</button>";
+                echo "<form action='/$weatherOrAir/{$currentCity['name']}/{$currentCity['country_code']}/{$currentCity['lat']}/{$currentCity['long']}' method='GET'>";
+                echo "<button type='submit' name='searchQuery' value='$searchQuery' class='city-button'>$text</button>";
                 echo '</form>';
             }
         }
@@ -43,27 +43,28 @@
 
     <?php if(isset($lat)) {?>
     
-    <form action="index.php" method="POST">
-        <div class="selection">
-        <?php 
-        $city['info'] = 'weather';
-        $request = json_encode($city);
-        echo "<button type='submit' name='city' value='$request'>Wetter</button>";
-        $city['info'] = 'air';
-        $request = json_encode($city);
-        echo "<button type='submit' name='city' value='$request'>Luftqualität</button>";
-        ?>
-        </div>
-    </form>
+    <div class="selection">
+    <?php 
+    $city['info'] = 'weather';
+    $request = json_encode($city);
+    echo "<form action='/weather/{$cityName}/{$country}/$lat/$long' method='GET'>";
+    echo "<button type='submit' name='searchQuery' value='$searchQuery'>Wetter</button>";
+    echo "</form>";
+    
+    echo "<form action='/air/{$cityName}/{$country}/$lat/$long' method='GET'>";
+    echo "<button type='submit' name='searchQuery' value='$searchQuery'>Luftqualität</button>";
+    echo "</form>";
+    
+    ?>
+    </div>
     
     <?php 
         if (isset($weather)) {
-            $info = $weather['info'];
             $weather = $weather['weather'];
             echo "<div class='weather-container'>";
             echo "<div class='weather-header'>";
-            echo "<div class='weather-title'>Das Wetter in {$info['name']}, {$info['country_code']}</div>";
-            echo "<p class='weather-coordinates'>({$info['lat']}, {$info['long']})</p>";
+            echo "<div class='weather-title'>Das Wetter in {$cityName}, {$country}</div>";
+            echo "<p class='weather-coordinates'>({$lat}, {$long})</p>";
             echo "</div>";
             echo "<div class='weather-scroll'>";
             foreach ($weather as $time => $temp) {
@@ -77,12 +78,10 @@
         }
         
         if(isset($air)){
-            $info = $air['info'];
-            $air = $air['air'];
             echo "<div class='weather-container'>";
             echo "<div class='weather-header'>";
-            echo "<div class='weather-title'>Die Luftqualität in {$info['name']}, {$info['country_code']}</div>";
-            echo "<p class='weather-coordinates'>({$info['lat']}, {$info['long']})</p>";
+            echo "<div class='weather-title'>Die Luftqualität in {$cityName}, {$country}</div>";
+            echo "<p class='weather-coordinates'>({$lat}, {$long})</p>";
             echo "</div>";
             echo "<div class='weather-scroll'>";
             echo "<div class='weather-card'>";

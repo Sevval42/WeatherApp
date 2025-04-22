@@ -10,14 +10,19 @@ class WeatherController {
 
     function searchCities(string $cityName)
     {
-        $cityList = WeatherService::getCityCoordinates($cityName);
+        $weatherOrAir = 'weather';
+        $searchQuery = $cityName;
+        $cityList = WeatherService::getCityCoordinates($searchQuery);
         require __DIR__ . '/Views/weather.php';
     }
 
-    function getWeatherForCity(string $cityName, float $lat, float $long)
+    function getWeatherForCity(string $cityName, string $country, float $lat, float $long)
     {
-        $cityList = WeatherService::getCityCoordinates($cityName);
-        
+        $cityName = urldecode($cityName);
+        $weatherOrAir = 'weather';
+        $searchQuery = $_GET['searchQuery'];
+        $cityList = WeatherService::getCityCoordinates($searchQuery);
+
         $result = WeatherService::getWeatherForCoordinates($lat, $long);
         $result_json = json_decode($result, true);
         $timeArray = array_map(fn($time)=>(new DateTime($time))->format('G') . ':00', $result_json['hourly']['time']);
@@ -28,10 +33,15 @@ class WeatherController {
         require __DIR__ . '/Views/weather.php';
     }
 
-    function getAirQualityForCity(string $cityInput)
+    function getAirQualityForCity(string $cityName, string $country, float $lat, float $long)
     {
-        $city = json_decode($cityInput, true);
-        $result = WeatherService::getAirQualityForCoordinates($city);
+        $cityName = urldecode($cityName);
+        $weatherOrAir = 'air';
+        $searchQuery = $_GET['searchQuery'];
+        $cityList = WeatherService::getCityCoordinates($searchQuery);
+
+
+        $result = WeatherService::getAirQualityForCoordinates($lat, $long);
         $result_json = json_decode($result, true);
 
         $times = array_map(fn($time)=>(new DateTime($time))->format('D d.'), $result_json['hourly']['time']);
@@ -54,11 +64,6 @@ class WeatherController {
                 $air[$key][$kind] /= count($times);
                 $air[$key][$kind] = round($air[$key][$kind], 2);
             }
-        }
-        $air = array_merge(['air' => $air], ['info' => $city]);
-
-        if (isset($city['cityList'])) {
-            $cityList = $city['cityList'];
         }
 
         require __DIR__ . '/Views/weather.php';

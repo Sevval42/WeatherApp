@@ -16,7 +16,7 @@ class WeatherService {
 
     public static function getCityCoordinates(string $city): array
     {
-        $city = urlencode($city);
+        //$city = urlencode($city);
         $url = self::CITY_URL . "$city";
         $result = file_get_contents($url);
         $json = json_decode($result, true)['results'];
@@ -51,12 +51,12 @@ class WeatherService {
         return $result;
     }
 
-    public static function getAirQualityForCoordinates(array $coords)
+    public static function getAirQualityForCoordinates(float $lat, float $long)
     {
         $url = self::AIR_URL;
         $parameters = [
-            'latitude'      => (string)$coords['lat'],
-            'longitude'     => (string)$coords['long'],
+            'latitude'      => (string)$lat,
+            'longitude'     => (string)$long,
             'hourly'        => implode(',', self::POLLEN),
             'forecast_days' => '4',
             'timezone'      => 'Europe%2FBerlin',
