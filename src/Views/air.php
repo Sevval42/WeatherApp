@@ -6,28 +6,38 @@
         echo "<form action='/weather/{$cityName}/{$country}/$lat/$long' method='GET'>";
         echo "<button type='submit' name='searchQuery' value='$searchQuery'>Wetter</button>";
         echo "</form>";
-        
+
         echo "<form action='/air/{$cityName}/{$country}/$lat/$long' method='GET'>";
         echo "<button type='submit' name='searchQuery' value='$searchQuery'>Luftqualität</button>";
         echo "</form>";
-        
+
         echo "</div>";
-        
-        if (isset($weather)) {
-            $weather = $weather['weather'];
+        if(isset($air)){
             echo "<div class='weather-container'>";
             echo "<div class='weather-header'>";
-            echo "<div class='weather-title'>Das Wetter in {$cityName}, {$country}</div>";
+            echo "<div class='weather-title'>Die Luftqualität in {$cityName}, {$country}</div>";
             echo "<p class='weather-coordinates'>({$lat}, {$long})</p>";
             echo "</div>";
             echo "<div class='weather-scroll'>";
-            foreach ($weather as $time => $temp) {
+            echo "<div class='weather-card'>";
+            echo "<div class='weather-time'>Date</div>";
+            echo "<div class='weather-temp'>Erle</div>";
+            echo "<div class='weather-temp'>Birke</div>";
+            echo "<div class='weather-temp'>Gräser</div>";
+            echo "<div class='weather-temp'>Beifuß</div>";
+            echo "<div class='weather-temp'>Olive</div>";
+            echo "<div class='weather-temp'>Ambrosia</div>";
+            echo "</div>";
+            foreach ($air as $time => $type) {
                 echo "<div class='weather-card'>";
                 echo "<div class='weather-time'>$time</div>";
-                echo "<div class='weather-temp'>$temp °C</div>";
+                foreach ($type as $pollen => $value) {
+                    echo "<div class='weather-temp'>$value</div>";
+                }
                 echo "</div>";
             }
             echo "</div>";
+            echo 'Angaben in Pollen/m^3';
             echo "</div>";
         }
     } 

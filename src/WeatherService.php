@@ -16,7 +16,6 @@ class WeatherService {
 
     public static function getCityCoordinates(string $city): array
     {
-        //$city = urlencode($city);
         $url = self::CITY_URL . "$city";
         $result = file_get_contents($url);
         $json = json_decode($result, true)['results'];

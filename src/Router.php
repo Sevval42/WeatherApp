@@ -21,7 +21,7 @@ class Router {
                 return;
             }
         }
-        echo 'ayy papi';
+        echo "Page does not exist :'(";
     }
 
 

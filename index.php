@@ -9,7 +9,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $controller = new WeatherController();
 
 $router = new Router;
-$router->add('/index', Closure::fromCallable([$controller, 'showForm']));
+$router->add('/', Closure::fromCallable([$controller, 'showForm']));
 
 $router->add(
     '/search/{city}',

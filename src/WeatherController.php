@@ -5,15 +5,14 @@ class WeatherController {
 
     function showForm() 
     {
-        require __DIR__ . '/Views/weather.php';
+        require __DIR__ . '/Views/search.php';
     }
 
-    function searchCities(string $cityName)
+    function searchCities(string $searchQuery)
     {
         $weatherOrAir = 'weather';
-        $searchQuery = $cityName;
         $cityList = WeatherService::getCityCoordinates($searchQuery);
-        require __DIR__ . '/Views/weather.php';
+        require __DIR__ . '/Views/search.php';
     }
 
     function getWeatherForCity(string $cityName, string $country, float $lat, float $long)
@@ -25,11 +24,16 @@ class WeatherController {
 
         $result = WeatherService::getWeatherForCoordinates($lat, $long);
         $result_json = json_decode($result, true);
-        $timeArray = array_map(fn($time)=>(new DateTime($time))->format('G') . ':00', $result_json['hourly']['time']);
+
+        $timeArray = array_map(
+            fn($time)=>(new DateTime($time))->format('G') . ':00',
+            $result_json['hourly']['time']
+        );
+
         $tempArray = $result_json['hourly']['temperature_2m'];
-        
         $weather['weather'] = array_combine($timeArray, $tempArray);
         
+        require __DIR__ . '/Views/search.php';
         require __DIR__ . '/Views/weather.php';
     }
 
@@ -66,7 +70,8 @@ class WeatherController {
             }
         }
 
-        require __DIR__ . '/Views/weather.php';
+        require __DIR__ . '/Views/search.php';
+        require __DIR__ . '/Views/air.php';
     }
 }
 ?>
