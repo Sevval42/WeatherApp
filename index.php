@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/src/WeatherController.php';
-require 'src/Router.php';
+require_once __DIR__ . '/src/Router.php';
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
